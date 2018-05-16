@@ -10,7 +10,7 @@ SETTINGS = {
         'port': 5700
     },
     'gee': {
-        'service_account': '390573081381-lm51tabsc8q8b33ik497hc66qcmbj11d@developer.gserviceaccount.com',
+        'service_account': 'api-highways@gpsdd-198018.iam.gserviceaccount.com',
         'privatekey_file': BASE_DIR + '/privatekey.pem'
     }
 }

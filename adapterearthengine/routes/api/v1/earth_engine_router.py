@@ -52,7 +52,7 @@ def query(dataset_id):
         return error(status=400, detail=e.message)
     except Exception as e:
         logging.error('[ROUTER]: '+str(e))
-        return error(status=500, detail='Generic Error')
+        return error(status=500, detail="Error performing query")
 
     try:
         response = EarthEngineService.execute_query(json_sql).response()
@@ -60,8 +60,10 @@ def query(dataset_id):
         logging.error('[ROUTER]: '+e.message)
         return error(status=400, detail=e.message)
     except Exception as e:
+        # hotfix until library developments
+        if str(e) == "'_init_cols'": return error(status=500, detail="Query not supported")
         logging.error('[ROUTER]: '+str(e))
-        return error(status=500, detail='Generic Error')
+        return error(status=500, detail=str(e))
 
     # @TODO
     meta = {}

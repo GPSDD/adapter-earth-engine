@@ -26,9 +26,13 @@ def build_query(rq):
             del fs['dataset']
 
         result_query = '?tableName="' + dataset.get('attributes', None).get('tableName') + '"'
-        for key in fs.keys():
-            param = '&' + key + '=' + fs.get(key)
-            result_query += param
+        try:
+            for key in fs.keys():
+                param = '&' + key + '=' + fs.get(key)
+                result_query += param
+        except TypeError as e:
+            logging.debug("ERROR HERE")
+            raise
     return result_query
 
 
@@ -61,7 +65,7 @@ def query(dataset_id):
         return error(status=400, detail=e.message)
     except Exception as e:
         # hotfix until library developments
-        if str(e) == "'_init_cols'": return error(status=500, detail="Query not supported")
+        if str(e) == "'_init_cols'": return error(status=500, detail="Query not supported. Please visit https://doc.apihighways.org/ to obtain more information on supported queries.")
         logging.error('[ROUTER]: '+str(e))
         return error(status=500, detail=str(e))
 
@@ -100,8 +104,10 @@ def download(dataset_id):
     logging.info('Downloading GEE Dataset')
 
     sql = request.args.get('sql', None) or request.get_json().get('sql', None)
-    result_query = build_query(request)
-
+    try:
+        result_query = build_query(request)
+    except TypeError as e:
+        return error(status=501, detail="Download not supported for this dataset. Please visit https://doc.apihighways.org/ to obtain more information on supported queries.")
     try:
         if sql:
             query_type = 'sql'
@@ -122,7 +128,6 @@ def download(dataset_id):
         return error(status=400, detail=e.message)
     except Exception as e:
         logging.error('[ROUTER]: '+str(e))
-        return error(status=500, detail='Generic Error')
 
     # @TODO
     meta = {}

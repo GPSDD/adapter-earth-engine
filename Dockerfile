@@ -5,7 +5,7 @@ ENV NAME adapterearthengine
 ENV USER adapterearthengine
 
 RUN apk update && apk upgrade && \
-   apk add --no-cache --update bash git libressl-dev build-base alpine-sdk \
+   apk add --no-cache --update bash git openssl-dev build-base alpine-sdk \
    libffi-dev gcc python3-dev musl-dev
 
 RUN addgroup $USER && adduser -s /bin/bash -D -G $USER $USER
